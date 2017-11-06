@@ -107,7 +107,7 @@ LO ENVIAMOS TODO AL 86 PORQUE LA MISMA MÁQUINA TIENE EL SERVIDOR EKIGA, EL PROX
  ** ¿Qué protocolo(s) se utiliza(n)? ¿Para qué sirven estos protocolos?
  RTP Y H.261
  RTP ES PROTOCOLO DE COMUNICACION EN TIEMPO REAL. NO FIABLE
- H.261 ES UN ESTÁNDAR DE COMPRESIÓN DE AUDIO
+ H.261 ES UN ESTÁNDAR DE COMPRESIÓN DE VIDEO
  ** ¿Cuál es el tamaño de paquete de los mismos?
  214 BYTES EL RTP
  H.261 TIENE TAMAÑO VARIABLE
@@ -124,53 +124,66 @@ LO ENVIAMOS TODO AL 86 PORQUE LA MISMA MÁQUINA TIENE EL SERVIDOR EKIGA, EL PROX
 
 12. Vamos a ver más a fondo el intercambio RTP. En Telephony hay una opción RTP. Empecemos mirando los flujos RTP.
  ** ¿Cuántos flujos hay? ¿por qué?
- 
+ DOS FLUJOS, AUDIO Y VIDEO
  ** ¿Cuántos paquetes se pierden?
- 
+ NO SE PIERDE NINGÚN PAQUETE
+ H261 ES VIDEO
+ G711 ES AUDIO
  ** ¿Cuál es el valor máximo del delta? ¿Y qué es lo que significa el valor de delta?
- 
+ 1290.47ms en el flujo de VIDEO
+ 1290.44ms en el flujo de AUDIO
+ LA DELTA ES EL TIEMPO QUE PASA ENTRE UN PAQUETE Y OTRO
  ** ¿Cuáles son los valores de jitter (medio y máximo)? ¿Qué quiere decir eso? ¿Estamos ante una conversación de calidad?
+ EN EL CASO DE AUDIO:
+ MAX JITTER 119.64 ms
+ MEDIO 42.50 ms
+ EL JITTER ES LA VARIACIÓN DEL RETARDO
+ MALA CALIDAD DE CONVERSACIÓN
  
 
 
 13. Elige un paquete RTP de audio. Analiza el flujo de audio en Telephony -> RTP -> Stream Analysis.
  ** ¿Cuánto valen el delta y el jitter para el primer paquete que ha llegado?
- 
+ AMBAS VALEN 0
  ** ¿Podemos saber si éste es el primer paquete que nos han enviado?
- 
+ SABEMOS CUÁL ES EL PRIMERO PORQUE EL CAMPO DE MARKET ESTÁ A TRUE
  ** Los valores de jitter son menores de 10ms hasta un paquete dado. ¿Cuál?
- 
+ HASTA EL 246 SON MENORES DE 10MS
  ** ¿A qué se debe el cambio tan brusco del jitter?
- 
+ SE PUEDE DEBER A QUE HAY UNA SOBRECARGA EN LA RED. TAMBIÉN AUMENTA EL DELTA
  ** ¿Es comparable este cambio con el tiempo desde la recepción del paquete anterior? ¿Por qué?
- 
+ NO ES COMPARABLE PORQUE EL JITTER ES LA MEDIA DE TODAS LAS DELTAS ANTERIORES Y EL CAMBIO DE TIEMPO ES EL TIEMPO EXACTO DE RECEPCIÓN
  ** ¿Cuál es la dependencia entre el tiempo transcurrido desde el paquete anterior y el valor de jitter?
- 
+ SI SUBE MUCHO EL VALOR DE LA DELTA, SUBE EL JITTER Y EL SIGUIENTE PAQUETE BAJARA DRASTICAMENTE EL VALOR DE LA DELTA
 
 
 14. En Telephony selecciona el menú VoIP calls. Verás que se lista la llamada de voz IP capturada en una ventana emergente. Selecciona esa llamada y pulsa el botón Graph.
  ** ¿Cuánto dura la conversación?
- 
+ 24.8 SEGUNDOS
  ** ¿Cuáles son sus SSRC? ¿Por qué hay varios SSRCs? ¿Hay CSRCs?
- 
+ EL DE CADA FLUJO, EL RTP(H261) EL DE VIDEO Y RTP(G711) EL DE AUDIO
+ SSRC NUMERO DE IDENTIFICACION Y SIRVE PARA SINCRONIZAR
+ VIDEO 0X43306582
+ AUDIO 0XBF4AFD37
+ CSRC NO HAY
 
 
 15. Identifica la trama donde se finaliza la conversación.
  ** ¿Qué método SIP se utiliza?
- 
+ EL MÉTODO BYE
  ** ¿En qué trama(s)?
- 
+ 924, 925, 927, 933
  ** ¿Por qué crees que se envía varias veces?
- 
+ PORQUE EL PUERTO ES INALCANZABLE. PORQUE DESDE QUE SE HA INICIADO LA CONVERSACIÓN, YA SE LE HA OLVIDADO QUIÉN ES ESA IP
 
 
 16. Finalmente, se cierra la aplicación de VozIP.
  ** ¿Por qué aparece una instrucción SIP del tipo REGISTER?
- 
+ PORQUE SE DA DE BAJA, LE MANDA EL REGUSTER CON EL EXPIRES A 0
  ** ¿En qué trama sucede esto?
- 
+ EN LA 950, Y EL NONCE SE LO MANDA EN LA 952
  ** ¿En qué se diferencia con la instrucción que se utilizó con anterioridad (al principio de la sesión)?
- 
+ ENVÍA EL EXPIRES A 0, Y AL PRINCIPIO LO ENVIA A 3600
 
 
 
