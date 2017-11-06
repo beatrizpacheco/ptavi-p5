@@ -82,37 +82,41 @@ LOS MENSAJES RTP SE ENVÍAN ENTRE EL INVITE Y EL BYE, ENTRE LOS SEGUNDOS 16 Y 38
 
 9. Fijémonos en las tramas siguientes a la número 46:
  ** ¿Se registra con éxito en el primer intento?
-
+ NO, PORQUE LA RESPUESTA ES 401 UNAUTHORIZED
  ** ¿Cómo sabemos si el registro se ha realizado correctamente o no?
- 
+ DESPUÉS DE ENVIARNOS EL NONCE, RESPONDERLE NOSOTROS, Y QUE COMPRUEBE QUE ESTÁ BIEN, EL SERVIDOR NOS RESPONDE CON UN 200 OK
  ** ¿Podrías identificar las diferencias entre el primer intento y el segundo de registro? (fíjate en el tamaño de los paquetes y mira a qué se debe el cambio)
- 
+ EN EL PRIMERO SON 523 BYTES, Y EN EL SEGUNDO SON 712. lA DIFERENCIA ES EL NÚMERO DE IDENTIFICACIÓN, QUE ES EL NONCE
  ** ¿Cuánto es el valor del tiempo de expiración de la sesión? Indica las unidades.
- 
+ EL VALOR DE EXPIRES SON 3600. LAS UNIDADES SON SEGUNDOS, ES DECIR, ES UNA HORA
 
 
 10. Una vez registrados, podemos efectuar una llamada. Vamos a probar con el servicio de eco de Ekiga que nos permite comprobar si nos hemos conectado correctamente. El servicio de eco tiene la dirección sip:500@ekiga.net. Veamos el INVITE de cerca.
  ** ¿Puede verse el nombre del que efectúa la llamada, así como su dirección SIP?
- 
+ From: "Gregorio Robles" <sip:grex@ekiga.net>
  ** ¿Qué es lo que contiene el cuerpo de la trama? ¿En qué formato/protocolo está?
- 
+ CONTIENE EL SDP CON LA DESCRIPCIÓN DE LA SESIÓN
  ** ¿Tiene éxito el primer intento? ¿Cómo lo sabes?
- 
+ NO, PORQUE LA RESPUESTA QUE RECIBIMOS ES "SIP/2.0 407 Proxy Authentication Required"
  ** ¿En qué se diferencia el segundo INVITE más abajo del primero? ¿A qué crees que se debe esto?
- 
+ EL PRIMER INVITE SON 982, Y EL SEGUNDO SON 1181, POR QUE SE DIFERENCIA EN EL NONCE
 
+LO ENVIAMOS TODO AL 86 PORQUE LA MISMA MÁQUINA TIENE EL SERVIDOR EKIGA, EL PROXI, Y EL USUARIO 500@
 
 11. Una vez conectado, estudia el intercambio de tramas.
  ** ¿Qué protocolo(s) se utiliza(n)? ¿Para qué sirven estos protocolos?
- 
+ RTP Y H.261
+ RTP ES PROTOCOLO DE COMUNICACION EN TIEMPO REAL. NO FIABLE
+ H.261 ES UN ESTÁNDAR DE COMPRESIÓN DE AUDIO
  ** ¿Cuál es el tamaño de paquete de los mismos?
- 
+ 214 BYTES EL RTP
+ H.261 TIENE TAMAÑO VARIABLE
  ** ¿Se utilizan bits de padding?
- 
+ ..0. .... = Padding: False
  ** ¿Cuál es la periodicidad de los paquetes que se envían?
- 
+ 0.02 SEGUNDOS (PASAS 8KHZ A SEGUNDOS)
  ** ¿Cuántos bits/segundo estamos enviando?
- 
+ 64KBIT/S
 
 
 
