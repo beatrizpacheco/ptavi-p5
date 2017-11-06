@@ -115,6 +115,7 @@ LO ENVIAMOS TODO AL 86 PORQUE LA MISMA MÁQUINA TIENE EL SERVIDOR EKIGA, EL PROX
  ..0. .... = Padding: False
  ** ¿Cuál es la periodicidad de los paquetes que se envían?
  0.02 SEGUNDOS (PASAS 8KHZ A SEGUNDOS)
+ EL TIMESTAMP SE DIFERENCIAN EN 160, ES DECIR, 160 BYTES. SABIENDO QUE EN 1 SEGUNDO ENVIA 8000 BYTES, HACES UNA REGLA DE TRES Y TARDA 20mseg
  ** ¿Cuántos bits/segundo estamos enviando?
  64KBIT/S
 
@@ -200,22 +201,29 @@ Captura de una sesión SIP
 
 19. Observa las diferencias en el inicio de la conversación entre el entorno del laboratorio y el del ejercicio anterior:
  ** ¿Es necesario el uso de DNS y STUN? ¿Por qué?
- 
+ SI YA LO HAS LLAMADO ANTES, QUE ES MI CASO, YA SABES SU IP Y NO NECESITAS LLAMAR AL DNS. CLASSICSTUN SÍ QUE HAY, PORQUE SIEMPRE LO SUELE HACER, PARA SABER SI ESTÁS DETRÁS DE NAT
  ** ¿Son diferentes el registro y la descripción de la sesión?
- 
+ SÍ, PORQUE LA DESCRIPCIÓN DE LA SESIÓN TE VIENE EN EL CUERPO DEL MENSAJE, Y EL REGISTER EN LA CABECERA DEL MENSAJE
 
 
 20. Identifica las diferencias existentes entre esta conversación y la conversación anterior:
  ** ¿Cuántos flujos tenemos?
- 
+ HAY 4 FLUJOS, DOS DE VIDEO Y DOS DE AUDIO, UNO POR CADA USUARIO EN LA LLAMADA
  ** ¿Cuál es su periodicidad?
- 
+ SPEEX AUDIO
+ THEORA VIDEO
  ** ¿Cuánto es el valor máximo del delta y los valores medios y máximo del jitter?
- 
+ MAX DELTA 33.65
+ MAX JITTER 1.06MS
+ MEAN JITTER 0.01MS
+
+ 8000BYTES EN 1S
+ real 320 bytes
+ 0.04ms
  ** ¿Podrías reproducir la conversación desde Wireshark? ¿Cómo? Comprueba que poniendo un valor demasiado pequeño para el buffer de jitter, la conversación puede no tener la calidad necesaria.
- 
+ SÍ, DESDE RTP --> TELEPHONY-RTP-SHOW ALL-ANALAYZER-PLAYER-DECODE
  ** ¿Sabrías decir qué tipo de servicio ofrece sip:9999@qxip.net?
- 
+ ES UN CANAL DE MÚSICA
 
 
 
