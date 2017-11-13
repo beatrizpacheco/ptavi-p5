@@ -11,181 +11,196 @@ Análisis de una sesión SIP
 
 Se ha capturado una sesión SIP (archivo sip.cap.gz), que se puede abrir con Wireshark2. Se pide rellenar las cuestiones que se plantean en este guión en el fichero p5.txt que encontrarás también en el repositorio.
 
+
 2. Observa que las tramas capturadas corresponden a una sesión SIP con Ekiga, un cliente de VoIP para GNOME. Responde a las siguientes cuestiones:
+
  ** ¿Cuántos paquetes componen la captura?
- 954 PAQUETES
+    954 PAQUETES
  ** ¿Cuánto tiempo dura la captura?
- 56 SEGUNDOS
+    56 SEGUNDOS
  ** ¿Qué IP tiene la máquina donde se ha efectuado la captura? ¿Se trata de una IP pública o de una IP privada? ¿Por qué lo sabes?
- 192.168.1.34. ES UNA IP PRIVADA. POR QUE COMIENZA CON EL 192.168. 
+    192.168.1.34. ES UNA IP PRIVADA. POR QUE COMIENZA CON EL 192.168. 
 
 
 3. Antes de analizar las tramas, mira las estadísticas generales que aparecen en el menú de Statistics. En el apartado de jerarquía de protocolos (Protocol Hierarchy) se puede ver el porcentaje del tráfico correspondiente al protocolo TCP y UDP.
+
  ** ¿Cuál de los dos es mayor? ¿Es esto consistente con una aplicación que transmite en tiempo real?
- HAY MÁS PAQUETES UDP 96.2%(918) QUE DE TCP 2.1%(20). PARA APLICACIONES EN TIEMPO REAL SE USA MÁS UDP, POR TANTO SÍ ES NORMAL
+    HAY MÁS PAQUETES UDP 96.2%(918) QUE DE TCP 2.1%(20). PARA APLICACIONES EN TIEMPO REAL SE USA MÁS UDP, POR TANTO SÍ ES NORMAL
  ** ¿Qué otros protocolos podemos ver en la jerarquía de protocolos? ¿Cuales son señal y cuales ruido?
- DENTRO DE UDP VEMOS SIP, RTP, RTCP, DNS, Y DENTRO DE TCP HTTP. TAMBIÉN EN LA CAPTURA VEMOS CLASSIC-STUN, ARP, H.261, ICMP..
- LOS DNS SÓLO SON PARA SABER EL NOMBRE A PARTIR DE UNA IP, EL ARP PARA SABER QUIÉN ES UNA DETERMINADA IP, LOS ICMP SON MENSAJES COMO QUE A UN PUERTO NO SE PUEDE ACCEDER
+    DENTRO DE UDP VEMOS SIP, RTP, RTCP, DNS, Y DENTRO DE TCP HTTP. TAMBIÉN EN LA CAPTURA VEMOS CLASSIC-STUN, ARP, H.261, ICMP..
+    LOS DNS SÓLO SON PARA SABER EL NOMBRE A PARTIR DE UNA IP, EL ARP PARA SABER QUIÉN ES UNA DETERMINADA IP, LOS ICMP SON MENSAJES COMO QUE A UN PUERTO NO SE PUEDE     ACCEDER
 
 
 4. Observa por encima el flujo de tramas en el menú de Statistics en IO Graphs. La captura que estamos viendo incluye desde la inicialización (registro) de la aplicación hasta su finalización, con una llamada entremedias.
+
  ** Filtra por sip para conocer cuándo se envían paquetes SIP. ¿En qué segundos tienen lugar esos envíos?
- EL REGISTER EN EL SEGUNDO 7, EL INVITE EN EL SEGUNDO 14 Y 16, EL BYE EN EL 38 Y 39, Y SE DA DE BAJA EN EL 55
+    EL REGISTER EN EL SEGUNDO 7, EL INVITE EN EL SEGUNDO 14 Y 16, EL BYE EN EL 38 Y 39, Y SE DA DE BAJA EN EL 55
  ** Y los paquetes con RTP, ¿cuándo se envían?
-LOS MENSAJES RTP SE ENVÍAN ENTRE EL INVITE Y EL BYE, ENTRE LOS SEGUNDOS 16 Y 38
+    LOS MENSAJES RTP SE ENVÍAN ENTRE EL INVITE Y EL BYE, ENTRE LOS SEGUNDOS 16 Y 38
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
 
+
 5. Analiza las dos primeras tramas de la captura.
+
  ** ¿Qué servicio es el utilizado en estas tramas?
- DNS, PARA SABER QUIEN ES EKIGA
+    DNS, PARA SABER QUIEN ES EKIGA
  **¿Cuál es la dirección IP del servidor de nombres del ordenador que ha lanzado Ekiga?
- LA 80.58.61.250, QUE ES QUIEN HA CONTESTADO EL DNS
+    LA 80.58.61.250, QUE ES QUIEN HA CONTESTADO EL DNS
  **¿Qué dirección IP (de ekiga.net) devuelve el servicio de nombres?
-  RESPONDE LA DIRECCIÓN 86.64.162.35
-  --> EL PAQUETE 3 ES LA RESOLUCIÓN INVERSA DE DNS, A LA CUAL RESPONDE QUE NO TIENE ESE SERVICIO
+    RESPONDE LA DIRECCIÓN 86.64.162.35
+    --> EL PAQUETE 3 ES LA RESOLUCIÓN INVERSA DE DNS, A LA CUAL RESPONDE QUE NO TIENE ESE SERVICIO
 
 
 6. A continuación, hay más de una docena de tramas TCP/HTTP.
+ 
  ** ¿Podrías decir la URL que se está pidiendo?
- EKIGA.NET/IP
+    EKIGA.NET/IP
  ** ¿Qué user agent (UA) la está pidiendo?
- EKIGA
+    EKIGA
  ** ¿Qué devuelve el servidor?
- DEVUELVE LA DIRECCIÓN IP 83.36.48.212, QUE ES MI IP PÚBLICA, CÓMO ME VEN DESDE FUERA
+    DEVUELVE LA DIRECCIÓN IP 83.36.48.212, QUE ES MI IP PÚBLICA, CÓMO ME VEN DESDE FUERA
  ** Si lanzamos el navegador web, por ejemplo, Mozilla Firefox, y vamos a la misma URL, ¿qué recibimos? ¿Qué es, entonces, lo que está respondiendo el servidor?
- LA DIRECCIÓN IP 212.128.255.8, QUE ES NUESTRA DIRECCIÓN IP EN EL LABORATORIO
- LO QUE RESPONDE EL SERVIDOR ES LA IP CON LA QUE ME VEN DESDE FUERA
+    LA DIRECCIÓN IP 212.128.255.8, QUE ES NUESTRA DIRECCIÓN IP EN EL LABORATORIO
+    LO QUE RESPONDE EL SERVIDOR ES LA IP CON LA QUE ME VEN DESDE FUERA
 
 
 7. Hasta la trama 45 se puede observar una secuencia de tramas del protocolo STUN.
+
  ** ¿Por qué se hace uso de este protocolo?
- STUN Es un protocolo de red del tipo cliente/servidor que permite a clientes NAT encontrar su dirección IP pública, el tipo de NAT en el que se encuentra y el puerto de Internet asociado con el puerto local a través de NAT. Esta información es usada para configurar una comunicación UDP entre dos hosts que se encuentren tras enrutadores NAT
+    STUN Es un protocolo de red del tipo cliente/servidor que permite a clientes NAT encontrar su dirección IP pública, el tipo de NAT en el que se encuentra y el puerto de Internet asociado con el puerto local a través de NAT. Esta información es usada para configurar una comunicación UDP entre dos hosts que se encuentren tras enrutadores NAT
  **¿Podrı́as decir si estamos tras un NAT?
- ESTAMOS DETRÁS DE UN NAT PORQUE TENEMOS IP PRIVADA, ADEMÁS PODEMOS SABERLO PORQUE NOSOTROS TENEMOS UNA IP, Y DESDE FUERA NOS ESTÁN VIENDO CON OTRA IP. LA NUESTRA ES 192.168.1.34, Y DESDE FUERA NOS VEN CON LA 83.36.48.212
+    ESTAMOS DETRÁS DE UN NAT PORQUE TENEMOS IP PRIVADA, ADEMÁS PODEMOS SABERLO PORQUE NOSOTROS TENEMOS UNA IP, Y DESDE FUERA NOS ESTÁN VIENDO CON OTRA IP. LA NUESTRA ES 192.168.1.34, Y DESDE FUERA NOS VEN CON LA 83.36.48.212
 
 
 8. La trama 46 es la primera trama SIP. En un entorno como el de Internet, lo habitual es desconocer la dirección IP de la otra parte al realizar una llamada. Por eso, todo usuario registra su localización en un servidor Registrar. El Registrar guarda información sobre los usuarios en un servidor de localización que puede ser utilizado para localizar usuarios.
- ** ¿Qué dirección IP tiene el servidor Registrar?
- 86.64.162.35
- ** ¿A qué puerto (del servidor Registrar) se envían los paquetes SIP?
- AL PUERTO 5060
- ** ¿Qué método SIP utiliza el UA para registrarse?
- EL MÉTODO REGISTER
- ** Además de REGISTER, ¿qué instrucciones SIP entiende el UA?
- INVITE,ACK,OPTIONS,BYE,CANCEL,NOTIFY,REFER,MESSAGE
 
+ ** ¿Qué dirección IP tiene el servidor Registrar?
+    86.64.162.35
+ ** ¿A qué puerto (del servidor Registrar) se envían los paquetes SIP?
+    AL PUERTO 5060
+ ** ¿Qué método SIP utiliza el UA para registrarse?
+    EL MÉTODO REGISTER
+ ** Además de REGISTER, ¿qué instrucciones SIP entiende el UA?
+    INVITE,ACK,OPTIONS,BYE,CANCEL,NOTIFY,REFER,MESSAGE
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
 
+
 9. Fijémonos en las tramas siguientes a la número 46:
+
  ** ¿Se registra con éxito en el primer intento?
- NO, PORQUE LA RESPUESTA ES 401 UNAUTHORIZED
+    NO, PORQUE LA RESPUESTA ES 401 UNAUTHORIZED
  ** ¿Cómo sabemos si el registro se ha realizado correctamente o no?
- DESPUÉS DE ENVIARNOS EL NONCE, RESPONDERLE NOSOTROS, Y QUE COMPRUEBE QUE ESTÁ BIEN, EL SERVIDOR NOS RESPONDE CON UN 200 OK
+    DESPUÉS DE ENVIARNOS EL NONCE, RESPONDERLE NOSOTROS, Y QUE COMPRUEBE QUE ESTÁ BIEN, EL SERVIDOR NOS RESPONDE CON UN 200 OK
  ** ¿Podrías identificar las diferencias entre el primer intento y el segundo de registro? (fíjate en el tamaño de los paquetes y mira a qué se debe el cambio)
- EN EL PRIMERO SON 523 BYTES, Y EN EL SEGUNDO SON 712. lA DIFERENCIA ES EL NÚMERO DE IDENTIFICACIÓN, QUE ES EL NONCE
+    EN EL PRIMERO SON 523 BYTES, Y EN EL SEGUNDO SON 712. lA DIFERENCIA ES EL NÚMERO DE IDENTIFICACIÓN, QUE ES EL NONCE
  ** ¿Cuánto es el valor del tiempo de expiración de la sesión? Indica las unidades.
- EL VALOR DE EXPIRES SON 3600. LAS UNIDADES SON SEGUNDOS, ES DECIR, ES UNA HORA
+    EL VALOR DE EXPIRES SON 3600. LAS UNIDADES SON SEGUNDOS, ES DECIR, ES UNA HORA
 
 
 10. Una vez registrados, podemos efectuar una llamada. Vamos a probar con el servicio de eco de Ekiga que nos permite comprobar si nos hemos conectado correctamente. El servicio de eco tiene la dirección sip:500@ekiga.net. Veamos el INVITE de cerca.
- ** ¿Puede verse el nombre del que efectúa la llamada, así como su dirección SIP?
- From: "Gregorio Robles" <sip:grex@ekiga.net>
- ** ¿Qué es lo que contiene el cuerpo de la trama? ¿En qué formato/protocolo está?
- CONTIENE EL SDP CON LA DESCRIPCIÓN DE LA SESIÓN
- ** ¿Tiene éxito el primer intento? ¿Cómo lo sabes?
- NO, PORQUE LA RESPUESTA QUE RECIBIMOS ES "SIP/2.0 407 Proxy Authentication Required"
- ** ¿En qué se diferencia el segundo INVITE más abajo del primero? ¿A qué crees que se debe esto?
- EL PRIMER INVITE SON 982, Y EL SEGUNDO SON 1181, POR QUE SE DIFERENCIA EN EL NONCE
 
-LO ENVIAMOS TODO AL 86 PORQUE LA MISMA MÁQUINA TIENE EL SERVIDOR EKIGA, EL PROXI, Y EL USUARIO 500@
+ ** ¿Puede verse el nombre del que efectúa la llamada, así como su dirección SIP?
+    From: "Gregorio Robles" <sip:grex@ekiga.net>
+ ** ¿Qué es lo que contiene el cuerpo de la trama? ¿En qué formato/protocolo está?
+    CONTIENE EL SDP CON LA DESCRIPCIÓN DE LA SESIÓN
+ ** ¿Tiene éxito el primer intento? ¿Cómo lo sabes?
+    NO, PORQUE LA RESPUESTA QUE RECIBIMOS ES "SIP/2.0 407 Proxy Authentication Required"
+ ** ¿En qué se diferencia el segundo INVITE más abajo del primero? ¿A qué crees que se debe esto?
+    EL PRIMER INVITE SON 982, Y EL SEGUNDO SON 1181, POR QUE SE DIFERENCIA EN EL NONCE
+    LO ENVIAMOS TODO AL 86 PORQUE LA MISMA MÁQUINA TIENE EL SERVIDOR EKIGA, EL PROXI, Y EL USUARIO 500@
+
 
 11. Una vez conectado, estudia el intercambio de tramas.
- ** ¿Qué protocolo(s) se utiliza(n)? ¿Para qué sirven estos protocolos?
- RTP Y H.261
- RTP ES PROTOCOLO DE COMUNICACION EN TIEMPO REAL. NO FIABLE
- H.261 ES UN ESTÁNDAR DE COMPRESIÓN DE VIDEO
- ** ¿Cuál es el tamaño de paquete de los mismos?
- 214 BYTES EL RTP
- H.261 TIENE TAMAÑO VARIABLE
- ** ¿Se utilizan bits de padding?
- ..0. .... = Padding: False
- ** ¿Cuál es la periodicidad de los paquetes que se envían?
- 0.02 SEGUNDOS (PASAS 8KHZ A SEGUNDOS)
- EL TIMESTAMP SE DIFERENCIAN EN 160, ES DECIR, 160 BYTES. SABIENDO QUE EN 1 SEGUNDO ENVIA 8000 BYTES, HACES UNA REGLA DE TRES Y TARDA 20mseg
- ** ¿Cuántos bits/segundo estamos enviando?
- 64KBIT/S
 
+ ** ¿Qué protocolo(s) se utiliza(n)? ¿Para qué sirven estos protocolos?
+    RTP Y H.261
+    RTP ES PROTOCOLO DE COMUNICACION EN TIEMPO REAL. NO FIABLE
+    H.261 ES UN ESTÁNDAR DE COMPRESIÓN DE VIDEO
+ ** ¿Cuál es el tamaño de paquete de los mismos?
+    214 BYTES EL RTP
+    H.261 TIENE TAMAÑO VARIABLE
+ ** ¿Se utilizan bits de padding?
+    ..0. .... = Padding: False
+ ** ¿Cuál es la periodicidad de los paquetes que se envían?
+    0.02 SEGUNDOS (PASAS 8KHZ A SEGUNDOS)
+    EL TIMESTAMP SE DIFERENCIAN EN 160, ES DECIR, 160 BYTES. SABIENDO QUE EN 1 SEGUNDO ENVIA 8000 BYTES, HACES UNA REGLA DE TRES Y TARDA 20mseg
+ ** ¿Cuántos bits/segundo estamos enviando?
+    64KBIT/S
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
 
+
 12. Vamos a ver más a fondo el intercambio RTP. En Telephony hay una opción RTP. Empecemos mirando los flujos RTP.
+
  ** ¿Cuántos flujos hay? ¿por qué?
- DOS FLUJOS, AUDIO Y VIDEO
+    DOS FLUJOS, AUDIO Y VIDEO
  ** ¿Cuántos paquetes se pierden?
- NO SE PIERDE NINGÚN PAQUETE
- H261 ES VIDEO
- G711 ES AUDIO
+    NO SE PIERDE NINGÚN PAQUETE
+    H261 ES VIDEO
+    G711 ES AUDIO
  ** ¿Cuál es el valor máximo del delta? ¿Y qué es lo que significa el valor de delta?
- 1290.47ms en el flujo de VIDEO
- 1290.44ms en el flujo de AUDIO
- LA DELTA ES EL TIEMPO QUE PASA ENTRE UN PAQUETE Y OTRO
+    1290.47ms en el flujo de VIDEO
+    1290.44ms en el flujo de AUDIO
+    LA DELTA ES EL TIEMPO QUE PASA ENTRE UN PAQUETE Y OTRO
  ** ¿Cuáles son los valores de jitter (medio y máximo)? ¿Qué quiere decir eso? ¿Estamos ante una conversación de calidad?
- EN EL CASO DE AUDIO:
- MAX JITTER 119.64 ms
- MEDIO 42.50 ms
- EL JITTER ES LA VARIACIÓN DEL RETARDO
- MALA CALIDAD DE CONVERSACIÓN
+    EN EL CASO DE AUDIO:
+    MAX JITTER 119.64 ms
+    MEDIO 42.50 ms
+    EL JITTER ES LA VARIACIÓN DEL RETARDO
+    MALA CALIDAD DE CONVERSACIÓN
  
 
-
 13. Elige un paquete RTP de audio. Analiza el flujo de audio en Telephony -> RTP -> Stream Analysis.
+
  ** ¿Cuánto valen el delta y el jitter para el primer paquete que ha llegado?
- AMBAS VALEN 0
+    AMBAS VALEN 0
  ** ¿Podemos saber si éste es el primer paquete que nos han enviado?
- SABEMOS CUÁL ES EL PRIMERO PORQUE EL CAMPO DE MARKET ESTÁ A TRUE
+    SABEMOS CUÁL ES EL PRIMERO PORQUE EL CAMPO DE MARKET ESTÁ A TRUE
  ** Los valores de jitter son menores de 10ms hasta un paquete dado. ¿Cuál?
- HASTA EL 246 SON MENORES DE 10MS
+    HASTA EL 246 SON MENORES DE 10MS
  ** ¿A qué se debe el cambio tan brusco del jitter?
- SE PUEDE DEBER A QUE HAY UNA SOBRECARGA EN LA RED. TAMBIÉN AUMENTA EL DELTA
+    SE PUEDE DEBER A QUE HAY UNA SOBRECARGA EN LA RED. TAMBIÉN AUMENTA EL DELTA
  ** ¿Es comparable este cambio con el tiempo desde la recepción del paquete anterior? ¿Por qué?
- NO ES COMPARABLE PORQUE EL JITTER ES LA MEDIA DE TODAS LAS DELTAS ANTERIORES Y EL CAMBIO DE TIEMPO ES EL TIEMPO EXACTO DE RECEPCIÓN
+    NO ES COMPARABLE PORQUE EL JITTER ES LA MEDIA DE TODAS LAS DELTAS ANTERIORES Y EL CAMBIO DE TIEMPO ES EL TIEMPO EXACTO DE RECEPCIÓN
  ** ¿Cuál es la dependencia entre el tiempo transcurrido desde el paquete anterior y el valor de jitter?
- SI SUBE MUCHO EL VALOR DE LA DELTA, SUBE EL JITTER Y EL SIGUIENTE PAQUETE BAJARA DRASTICAMENTE EL VALOR DE LA DELTA
+    SI SUBE MUCHO EL VALOR DE LA DELTA, SUBE EL JITTER Y EL SIGUIENTE PAQUETE BAJARA DRASTICAMENTE EL VALOR DE LA DELTA
 
 
 14. En Telephony selecciona el menú VoIP calls. Verás que se lista la llamada de voz IP capturada en una ventana emergente. Selecciona esa llamada y pulsa el botón Graph.
+
  ** ¿Cuánto dura la conversación?
- 24.8 SEGUNDOS
+    24.8 SEGUNDOS
  ** ¿Cuáles son sus SSRC? ¿Por qué hay varios SSRCs? ¿Hay CSRCs?
- EL DE CADA FLUJO, EL RTP(H261) EL DE VIDEO Y RTP(G711) EL DE AUDIO
- SSRC NUMERO DE IDENTIFICACION Y SIRVE PARA SINCRONIZAR
- VIDEO 0X43306582
- AUDIO 0XBF4AFD37
- CSRC NO HAY
+    EL DE CADA FLUJO, EL RTP(H261) EL DE VIDEO Y RTP(G711) EL DE AUDIO
+    SSRC NUMERO DE IDENTIFICACION Y SIRVE PARA SINCRONIZAR
+    VIDEO 0X43306582
+    AUDIO 0XBF4AFD37
+    CSRC NO HAY
 
 
 15. Identifica la trama donde se finaliza la conversación.
+ 
  ** ¿Qué método SIP se utiliza?
- EL MÉTODO BYE
+    EL MÉTODO BYE
  ** ¿En qué trama(s)?
- 924, 925, 927, 933
+    924, 925, 927, 933
  ** ¿Por qué crees que se envía varias veces?
- PORQUE EL PUERTO ES INALCANZABLE. PORQUE DESDE QUE SE HA INICIADO LA CONVERSACIÓN, YA SE LE HA OLVIDADO QUIÉN ES ESA IP
+    PORQUE EL PUERTO ES INALCANZABLE. PORQUE DESDE QUE SE HA INICIADO LA CONVERSACIÓN, YA SE LE HA OLVIDADO QUIÉN ES ESA IP
 
 
 16. Finalmente, se cierra la aplicación de VozIP.
+ 
  ** ¿Por qué aparece una instrucción SIP del tipo REGISTER?
- PORQUE SE DA DE BAJA, LE MANDA EL REGUSTER CON EL EXPIRES A 0
+    PORQUE SE DA DE BAJA, LE MANDA EL REGUSTER CON EL EXPIRES A 0
  ** ¿En qué trama sucede esto?
- EN LA 950, Y EL NONCE SE LO MANDA EN LA 952
+    EN LA 950, Y EL NONCE SE LO MANDA EN LA 952
  ** ¿En qué se diferencia con la instrucción que se utilizó con anterioridad (al principio de la sesión)?
- ENVÍA EL EXPIRES A 0, Y AL PRINCIPIO LO ENVIA A 3600
-
+    ENVÍA EL EXPIRES A 0, Y AL PRINCIPIO LO ENVIA A 3600
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
@@ -195,39 +210,44 @@ LO ENVIAMOS TODO AL 86 PORQUE LA MISMA MÁQUINA TIENE EL SERVIDOR EKIGA, EL PROX
 
 Captura de una sesión SIP
 
+
 17. Dirı́gete a la web http://www.ekiga.net con el navegador y créate una cuenta. Lanza Ekiga, y configúralo con los datos de la cuenta que te acabas de crear. Comprueba que estás conectado (En la barra al final de la ventana podrás ver “Connected”). Al terminar, cierra completamente Ekiga.
+
 
 18. Captura una sesión SIP de una conversación con el número SIP sip:9999@qxip.net. Recuerda que has de comenzar a capturar tramas antes de arrancar Ekiga para ver todo el proceso.
 
+
 19. Observa las diferencias en el inicio de la conversación entre el entorno del laboratorio y el del ejercicio anterior:
+
  ** ¿Es necesario el uso de DNS y STUN? ¿Por qué?
- SI YA LO HAS LLAMADO ANTES, QUE ES MI CASO, YA SABES SU IP Y NO NECESITAS LLAMAR AL DNS. CLASSICSTUN SÍ QUE HAY, PORQUE SIEMPRE LO SUELE HACER, PARA SABER SI ESTÁS DETRÁS DE NAT
+    SI YA LO HAS LLAMADO ANTES, QUE ES MI CASO, YA SABES SU IP Y NO NECESITAS LLAMAR AL DNS. CLASSICSTUN SÍ QUE HAY, PORQUE SIEMPRE LO SUELE HACER, PARA SABER SI ESTÁS DETRÁS DE NAT
  ** ¿Son diferentes el registro y la descripción de la sesión?
- SÍ, PORQUE LA DESCRIPCIÓN DE LA SESIÓN TE VIENE EN EL CUERPO DEL MENSAJE, Y EL REGISTER EN LA CABECERA DEL MENSAJE
+    SÍ, PORQUE LA DESCRIPCIÓN DE LA SESIÓN TE VIENE EN EL CUERPO DEL MENSAJE, Y EL REGISTER EN LA CABECERA DEL MENSAJE
 
 
 20. Identifica las diferencias existentes entre esta conversación y la conversación anterior:
+
  ** ¿Cuántos flujos tenemos?
- HAY 4 FLUJOS, DOS DE VIDEO Y DOS DE AUDIO, UNO POR CADA USUARIO EN LA LLAMADA
+    HAY 4 FLUJOS, DOS DE VIDEO Y DOS DE AUDIO, UNO POR CADA USUARIO EN LA LLAMADA
  ** ¿Cuál es su periodicidad?
- SPEEX AUDIO
- THEORA VIDEO
+    SPEEX AUDIO
+    THEORA VIDEO
  ** ¿Cuánto es el valor máximo del delta y los valores medios y máximo del jitter?
- MAX DELTA 33.65
- MAX JITTER 1.06mS
- MEAN JITTER 0.01mS
+    MAX DELTA 33.65
+    MAX JITTER 1.06mS
+    MEAN JITTER 0.01mS
 
- LO IDEAL SON 8000BYTES EN 1S
- LO REAL, LO QUE TENEMOS MIRANDO EL TIMESTAM SON 320 bytes
- HACIENDO UNA REGLA DE TRES, NOS SALEN 0.04ms
+    LO IDEAL SON 8000BYTES EN 1S
+    LO REAL, LO QUE TENEMOS MIRANDO EL TIMESTAM SON 320 bytes
+    HACIENDO UNA REGLA DE TRES, NOS SALEN 0.04ms
  ** ¿Podrías reproducir la conversación desde Wireshark? ¿Cómo? Comprueba que poniendo un valor demasiado pequeño para el buffer de jitter, la conversación puede no tener la calidad necesaria.
- SÍ, DESDE RTP --> TELEPHONY-RTP-SHOW ALL-ANALAYZER-PLAYER-DECODE
+    SÍ, DESDE RTP --> TELEPHONY-RTP-SHOW ALL-ANALAYZER-PLAYER-DECODE
  ** ¿Sabrías decir qué tipo de servicio ofrece sip:9999@qxip.net?
- ES UN CANAL DE MÚSICA
-
+    ES UN CANAL DE MÚSICA
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
+
 
 21. Filtra por los paquetes SIP de la captura y guarda únicamente los paquetes SIP como p5.pcapng. Abre el fichero guardado para cerciorarte de que lo has hecho bien. Deberás guardarlo en un archivo de nombre p5.pcapng y añadirlo al repositorio.
 
