@@ -214,12 +214,12 @@ Captura de una sesión SIP
  THEORA VIDEO
  ** ¿Cuánto es el valor máximo del delta y los valores medios y máximo del jitter?
  MAX DELTA 33.65
- MAX JITTER 1.06MS
- MEAN JITTER 0.01MS
+ MAX JITTER 1.06mS
+ MEAN JITTER 0.01mS
 
- 8000BYTES EN 1S
- real 320 bytes
- 0.04ms
+ LO IDEAL SON 8000BYTES EN 1S
+ LO REAL, LO QUE TENEMOS MIRANDO EL TIMESTAM SON 320 bytes
+ HACIENDO UNA REGLA DE TRES, NOS SALEN 0.04ms
  ** ¿Podrías reproducir la conversación desde Wireshark? ¿Cómo? Comprueba que poniendo un valor demasiado pequeño para el buffer de jitter, la conversación puede no tener la calidad necesaria.
  SÍ, DESDE RTP --> TELEPHONY-RTP-SHOW ALL-ANALAYZER-PLAYER-DECODE
  ** ¿Sabrías decir qué tipo de servicio ofrece sip:9999@qxip.net?
